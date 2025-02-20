@@ -7,16 +7,13 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     const password = document.getElementById("password").value;
 
     // Check if email is a Gmail ID
-    if (!email.endsWith("@gmail.com")) {
-        alert("Please use a Gmail ID for login.");
+    if (!email.endsWith("@nuv.ac.in")) {
+        alert("Please use a NUV ID for login.");
         return;
     }
 
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        const userDoc = await getDoc(doc(db, "SuperAdminUsers", user.uid));
+        const userDoc = await getDoc(doc(db, "SuperAdminUsers"));
         
         if (userDoc.exists()) {
             alert("Login successful!");

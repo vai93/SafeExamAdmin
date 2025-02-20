@@ -1,6 +1,12 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 import { db ,signInUser } from "./firebase.js";
 const studentdb="StudentDetails2022";
+
+(function(){
+           emailjs.init({
+             publicKey: "g8tEoLshCOsw5brf5",
+           });
+        })();
 const excludedEmails = [
    
 ];

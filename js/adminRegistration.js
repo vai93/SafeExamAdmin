@@ -7,7 +7,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     try {
-        const response = await fetch("http://localhost:3000/api/adminRegistration", {
+        const response = await fetch("api/adminRegistration", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, nuvID, password, confirmPassword })

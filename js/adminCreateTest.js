@@ -6,11 +6,40 @@ document.addEventListener("DOMContentLoaded", function () {
     emailjs.init("wk9qhm94B23_lBZWR");
 });
 
-function generateTestID() {
-    let randomNum = Math.floor(100 + Math.random() * 900);
-    let testId = "Test" + randomNum;
-    document.getElementById("testId").value = testId;
-}
+async function generateTestID() {
+        try {
+            const response = await fetch('api/getTest', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ adminEmail: "admin@example.com" }) // Replace with actual admin email
+            });
+    
+            const data = await response.json();
+            
+            // Ensure `data.tests` exists and is an array
+            let testArray = Array.isArray(data.tests) ? data.tests : [];
+    
+            let existingTestNumbers = new Set();
+            testArray.forEach(test => {
+                let match = test.testId?.match(/Test(\d+)/);
+                if (match) {
+                    existingTestNumbers.add(parseInt(match[1], 10));
+                }
+            });
+    
+            // Generate a random test number between 1000 and 9999
+            let newTestNumber;
+            do {
+                newTestNumber = Math.floor(1000 + Math.random() * 9000); // Ensures 4-digit random ID
+            } while (existingTestNumbers.has(newTestNumber)); // Regenerate if it exists
+    
+            let newTestId = "Test" + newTestNumber;
+            document.getElementById("testId").value = newTestId;
+    
+        } catch (error) {
+            console.error("Error fetching test details:", error);
+        }
+    }
 
 document.getElementById("createTestForm").addEventListener("submit", async function (event) {
     event.preventDefault();

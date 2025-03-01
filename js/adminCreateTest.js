@@ -59,7 +59,7 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
             adminEmail:adminEmail
         };
 
-        const response = await fetch("http://localhost:3000/api/adminCreateTest", {
+        const response = await fetch("api/adminCreateTest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -125,7 +125,7 @@ function sendEmailsToStudents(students) {
 
 async function storeFailedEmail(student) {
     try {
-        const response = await fetch("http://localhost:3000/api/storeFailedEmail", {
+        const response = await fetch("api/storeFailedEmail", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

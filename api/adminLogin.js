@@ -1,11 +1,12 @@
 const { db } = require("../firebase-admin-setup");
 const admin = require("firebase-admin");
+console.log("FIREBASE_PRIVATE_KEY:", process.env.FIREBASE_PRIVATE_KEY);
 
 module.exports = async (req, res) => {
     if (req.method !== "POST") {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
-
+    
     const email = req.body.email?.trim(); // Trim email input
     const password = req.body.password;
 

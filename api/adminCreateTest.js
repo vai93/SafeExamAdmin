@@ -214,5 +214,5 @@ module.exports = async (req, res) => {
         return res.status(500).json({ message: "Error processing test", error: error.message });
     }
 };
-module.exports = createTestHandler;
+module.exports = adminCreateTest;
 

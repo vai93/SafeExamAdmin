@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
         }
         
         const { Octokit } = await import("@octokit/rest"); // Use dynamic import
-        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        const octokit = new Octokit({ auth: "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"});
 
         const owner = "vai93";
         const repo = "SafeExam";

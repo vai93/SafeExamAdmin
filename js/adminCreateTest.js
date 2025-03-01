@@ -30,7 +30,7 @@ async function generateTestID() {
          
             let newTestNumber;
             do {
-                newTestNumber = Math.floor(1000 + Math.random() * 900); // Ensures 4-digit random ID
+                newTestNumber = Math.floor(100 + Math.random() * 900); // Ensures 4-digit random ID
             } while (existingTestNumbers.has(newTestNumber)); // Regenerate if it exists
     
             let newTestId = "Test" + newTestNumber;

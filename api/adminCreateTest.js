@@ -2,7 +2,7 @@ const { db } = require("../firebase-admin-setup");
 const admin = require("firebase-admin");
 const XLSX = require("xlsx");
 const path = require("path");
-require("dotenv").config();
+import 'dotenv/config';
 module.exports = async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

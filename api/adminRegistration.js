@@ -1,9 +1,14 @@
 const { db } = require("../firebase-admin-setup");
 const nodemailer = require("nodemailer");
 const admin = require("firebase-admin");
-const bcrypt = require("bcrypt");
 
 module.exports = async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
     if (req.method !== "POST") {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
@@ -15,32 +20,36 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // Hash Password
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create User in Firebase Auth
-        const userRecord = await admin.auth().createUser({
-            email: nuvID, // Assuming nuvID is the email
-            password: password,
-            displayName: name,
-            emailVerified: false, // Not verified yet
-        });
+        // const userRecord = await admin.auth().createUser({
+        //     email: nuvID,
+        //     password: password,
+        //     displayName: name,
+        //     emailVerified: false, // Not verified yet
+        // });
 
+        const userDoc = await db.collection("adminDetails").doc(nuvID).get();
+
+        if (userDoc.exists) {
+            return res.status(400).json({ message: "Email already registered. Try logging in instead." });
+        }
         // Save to Firestore
-        await db.collection("SuperAdminUsers").doc(nuvID).set({
+        await db.collection("adminDetails").doc(nuvID).set({
             name,
             email: nuvID,
-            password: hashedPassword,
+            password: password,
             emailVerified: false, // Store verification status
         });
-
-        // Send Verification Email to the New Admin
-        await sendVerificationEmail(userRecord.email);
+         // Send Verification Email to the New Admin
+        //  await sendVerificationEmail(userRecord.email);
 
         // Notify the Super Admin about the new registration
-        await notifySuperAdmin(name, nuvID);
+        // await notifySuperAdmin(name, nuvID);
 
-        res.status(200).json({ message: "Registration successful! Please verify your email." });
+       
+
+        
+        res.status(200).json({ message: "Registration successful! Please contact to the administrator for verification." });
     } catch (error) {
         console.error("Error registering user:", error);
         res.status(500).json({ message: "Error registering user", error: error.message });
@@ -55,7 +64,7 @@ async function sendVerificationEmail(email) {
     };
 
     const link = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
-
+    console.log("Generated verification link:", link); 
     // Send email using Nodemailer
     const transporter = nodemailer.createTransport({
         service: "gmail",

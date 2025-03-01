@@ -144,9 +144,11 @@ async function submitUpdate() {
             const result = await response.json();
             alert(result.message);
 
-            if (response.ok && result.newStudents.length > 0) {
+            if (response.ok ){
+                if(result.newStudents){
+                    if(result.newStudents.length > 0) {
                 sendEmailsToStudents(result.newStudents);
-            }
+            }}}
         } catch (error) {
             console.error("Error:", error);
             alert("Error updating student list.");

@@ -2,7 +2,7 @@ const { db } = require("../firebase-admin-setup");
 const admin = require("firebase-admin");
 const XLSX = require("xlsx");
 const path = require("path");
-import 'dotenv/config';
+require('dotenv').config();
 module.exports = async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -214,5 +214,5 @@ module.exports = async (req, res) => {
         return res.status(500).json({ message: "Error processing test", error: error.message });
     }
 };
-module.exports = adminCreateTest;
+
 

@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
                 
                 <center>
                 <button type="submit" class="button button-primary button-large">
-                    Start Quiz
+                    Login
                 </button></center>
               </form>
             </div>

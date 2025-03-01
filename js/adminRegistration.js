@@ -7,7 +7,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
     const confirmPassword = document.getElementById("confirmPassword").value;
 
     try {
-        const response = await fetch("/api/adminRegistration", {
+        const response = await fetch("http://localhost:3000/api/adminRegistration", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, nuvID, password, confirmPassword })
@@ -17,7 +17,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
         alert(result.message);
 
         if (response.ok) {
-            window.location.href = "\adminRegistration.html";
+            window.location.href = "\index.html";
         }
     } catch (error) {
         console.error("Error:", error);

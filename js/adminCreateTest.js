@@ -1,0 +1,144 @@
+let admin=sessionStorage.getItem("admin");
+if(!admin){window.location.href = "\index.html";}
+
+document.addEventListener("DOMContentLoaded", function () {
+    generateTestID();
+    emailjs.init("wk9qhm94B23_lBZWR");
+});
+
+function generateTestID() {
+    let randomNum = Math.floor(100 + Math.random() * 900);
+    let testId = "Test" + randomNum;
+    document.getElementById("testId").value = testId;
+}
+
+document.getElementById("createTestForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const testId = document.getElementById("testId").value;
+    const testTitle = document.getElementById("testTitle").value.trim();
+    const testDuration = document.getElementById("testDuration").value.trim();
+    const questionFile = document.getElementById("questionFile").files[0];
+    const studentFile = document.getElementById("studentFile").files[0];
+    const adminEmail=sessionStorage.getItem("adminEmail");
+    if (!questionFile || !studentFile) {
+        alert("Please upload both Question and Student files.");
+        return;
+    }
+
+    if (!questionFile.name.match(/\.(xlsx|xls)$/) || !studentFile.name.match(/\.(xlsx|xls)$/)) {
+        alert("Invalid file format. Only Excel files are allowed.");
+        return;
+    }
+
+    loader.style.display = "flex";
+    spinner.style.display = "block";
+
+    // Read both files as Base64
+    const readFileAsBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(",")[1]); // Remove the prefix
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    try {
+        const questionFileBase64 = await readFileAsBase64(questionFile);
+        const studentFileBase64 = await readFileAsBase64(studentFile);
+
+        const payload = {
+            testId: testId,
+            testTitle: testTitle,
+            testDuration: testDuration,
+            questionFileData: questionFileBase64,
+            questionFileName: questionFile.name,
+            studentFileData: studentFileBase64,
+            studentFileName: studentFile.name,
+            adminEmail:adminEmail
+        };
+
+        const response = await fetch("http://localhost:3000/api/adminCreateTest", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            mode: "cors",
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert("Test created successfully!");
+            console.log(result.newStudents);
+            if (result.newStudents.length > 0) {
+                sendEmailsToStudents(result.newStudents);
+            }
+            document.getElementById("createTestForm").reset();
+        } else {
+            alert(result.message || "Error creating test.");
+        }
+    } catch (error) {
+        console.error("Error processing files:", error);
+        alert("Error processing files.");
+    } finally {
+        loader.style.display = "none";
+        spinner.style.display = "none";
+    }
+});
+
+function sendEmailsToStudents(students) {
+    let failedEmails = [];
+
+    students.forEach(student => {
+        const templateParams = {
+            to_email: student.email,
+            subject: "Your Unique Key for the Exam",
+            rollnumber: student.rollNumber,
+            uniqueKey: student.uniqueKey
+        };
+
+        emailjs.send("service_fiyiagk", "template_fdt3ewg", templateParams)
+            .then(response => {
+                console.log(`Email sent to ${student.email}:`, response);
+            })
+            .catch(error => {
+                failedEmails.push(student);
+                console.error(`Error sending email to ${student.email}:`, error);
+            })
+            .finally(async () => {
+                if (failedEmails.length > 0) {
+                    alert(`Error: Emails were not sent to ${failedEmails.length} students. Please contact the admin.`);
+                    
+                    try {
+                        for (const student of failedEmails) {
+                            await storeFailedEmail(student);
+                        }
+                    } catch (error) {
+                        console.error("Error storing failed emails:", error);
+                    }
+                }
+            });
+    });
+}
+
+
+
+async function storeFailedEmail(student) {
+    try {
+        const response = await fetch("http://localhost:3000/api/storeFailedEmail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: student.name,
+                email: student.email,
+                rollNumber: student.rollNumber,
+                uniqueKey: student.uniqueKey
+            })
+        });
+
+        const data = await response.json();
+        console.log("Failed email stored:", data);
+    } catch (error) {
+        console.error("Error calling storeFailedEmail API:", error);
+    }
+}

@@ -10,7 +10,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     }
 
     try {
-        const response = await fetch("/api/adminLogin", {
+        const response = await fetch("http://localhost:3000/api/adminLogin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -22,7 +22,9 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
         if (response.ok) {
             alert("Login successful!");
-            window.location.href = "\welcome.html";
+            sessionStorage.setItem("admin",data.name);
+            sessionStorage.setItem("adminEmail",data.email);
+            window.location.href = "\dashboard.html";
         } else {
             alert(data.message);
         }

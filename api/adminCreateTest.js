@@ -2,7 +2,6 @@ const { db } = require("../firebase-admin-setup");
 const admin = require("firebase-admin");
 const XLSX = require("xlsx");
 const path = require("path");
-const { Octokit } = require("@octokit/rest");
 module.exports = async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -177,10 +176,10 @@ module.exports = async (req, res) => {
 </body>
 </html>
     `;
-
-
+    async function createTestHandler(req, res) {
+    const { Octokit } = await import("@octokit/rest"); // Use dynamic import
     const octokit = new Octokit({ auth: "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"});
-
+    
     const owner = "vai93"; // Your GitHub Username
     const repo = "SafeExam"; // Your Repository Name
     const filePath = `${testId}/index.html`; // File path in the repo
@@ -215,7 +214,7 @@ module.exports = async (req, res) => {
         console.error("GitHub Upload Error:", error);
     }
 
-
+    }
 
         return res.status(200).json({ message: "Test created successfully!", newStudents });
     } catch (error) {

@@ -27,10 +27,10 @@ async function generateTestID() {
                 }
             });
     
-            // Generate a random test number between 1000 and 9999
+         
             let newTestNumber;
             do {
-                newTestNumber = Math.floor(1000 + Math.random() * 9000); // Ensures 4-digit random ID
+                newTestNumber = Math.floor(1000 + Math.random() * 900); // Ensures 4-digit random ID
             } while (existingTestNumbers.has(newTestNumber)); // Regenerate if it exists
     
             let newTestId = "Test" + newTestNumber;

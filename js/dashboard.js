@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     noTestsMessage.innerHTML = "<p>Loading tests...</p>";
     noTestsMessage.style.display = "block";
     try {
-        const response = await fetch("http://localhost:3000/api/getTest", {
+        const response = await fetch("api/getTest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ adminEmail }),
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         const isActive = this.getAttribute("data-active") === "true"; // Convert string to boolean
 
                         try {
-                            const response = await fetch("http://localhost:3000/api/toggleTestStatus", {
+                            const response = await fetch("api/toggleTestStatus", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ testId, isActive: !isActive }), // Toggle the status
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 async function downloadResponses(testId) {
     try {
-        const response = await fetch("http://localhost:3000/api/getResponses", {
+        const response = await fetch("api/getResponses", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ responsedb: `${testId}StudentResponses` }),

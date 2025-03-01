@@ -88,7 +88,8 @@ function showUpdateFormStudents() {
 
 
 function deleteResponses() {
-    testId=sessionStorage.getItem("testId");
+    showLoader();
+    const testId=sessionStorage.getItem("testId");
     if (confirm("Are you sure you want to delete all responses? This action cannot be undone.")) {
         fetch("api/deleteResponses", {
             method: "POST",
@@ -97,15 +98,24 @@ function deleteResponses() {
         })
         .then(response => response.json())
         .then(data => alert(data.message))
-        .catch(error => console.error("Error:", error));
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            hideLoader();
+        });
+    } else {
+        hideLoader(); // Hide loader if user cancels deletion
     }
-}
+    }
 
 function deleteTest() {
+    showLoader();
     const testId = sessionStorage.getItem("testId");
     const confirmation = confirm("Are you sure you want to delete this test? This will remove all questions as well as responses permanently.");
     
-    if (!confirmation) return;
+    if (!confirmation) {
+        hideLoader(); // Hide loader if user cancels deletion
+        return;
+    }
 
     fetch("http://localhost:3000/api/deleteTest", {
         method: "POST",
@@ -123,10 +133,16 @@ function deleteTest() {
     .catch(error => {
         console.error("Error:", error);
         alert("Error deleting the test.");
-    });
-}
+    })
+    .finally(() => {
+            hideLoader();
+        });
+    } 
+    }
+
 
 async function submitUpdate() {
+    showLoader();
     testId=sessionStorage.getItem("testId");
     const fileInput = document.getElementById("updateFile");
     const file = fileInput.files[0];
@@ -160,7 +176,9 @@ async function submitUpdate() {
         } catch (error) {
             console.error("Error:", error);
             alert("Error updating student list.");
-        }
+        }finally {
+        hideLoader();
+    }
     };
 }
 
@@ -220,12 +238,8 @@ async function storeFailedEmail(student) {
 }
 
 
-
-
-
-
-
 function updateTestTitle() {
+    showLoader();
     testId=sessionStorage.getItem("testId");
     const newTitle = prompt("Enter new test title:");
     if (newTitle) {
@@ -236,11 +250,15 @@ function updateTestTitle() {
         })
         .then(response => response.json())
         .then(data => alert(data.message))
-        .catch(error => console.error("Error:", error));
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            hideLoader();
+        });
     }
 }
 
 function updateTestDuration() {
+    showLoader();
     testId=sessionStorage.getItem("testId");
     const newDuration = prompt("Enter new test duration (in minutes):");
     if (newDuration) {
@@ -251,6 +269,62 @@ function updateTestDuration() {
         })
         .then(response => response.json())
         .then(data => alert(data.message))
-        .catch(error => console.error("Error:", error));
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            hideLoader();
+        });
+    }
+}
+function createLoader() {
+    if (!document.getElementById("loader")) {
+        const loaderDiv = document.createElement("div");
+        loaderDiv.id = "loader";
+        loaderDiv.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        `;
+        loaderDiv.innerHTML = `
+            Processing... Please wait.
+            <div id="spinner" style="
+                border: 8px solid #6bf3ac;
+                border-top: 8px solid #3498db;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 2s linear infinite;
+                margin-top: 10px;
+            "></div>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        `;
+        document.body.appendChild(loaderDiv);
+    }
+}
+
+function showLoader() {
+    createLoader();
+    document.getElementById("loader").style.display = "flex";
+}
+
+function hideLoader() {
+    const loader = document.getElementById("loader");
+    if (loader) {
+        loader.style.display = "none";
     }
 }

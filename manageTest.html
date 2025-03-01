@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Test - Exam Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <style>
+        .container {
+            display: flex;
+            margin-top: 20px;
+        }
+        .sidebar {
+            width: 250px;
+            border-right: 1px solid #ddd;
+            padding: 10px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .exam-item {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .exam-item:hover {
+            background-color: #f1f1f1;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        .update-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="dashboard.html">Exam Portal - Admin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="createTest.html">Create Test</a></li>
+                <li class="nav-item"><a class="nav-link active" href="manageTest.html">Manage Tests</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Left Sidebar (Exam List) -->
+    <div class="sidebar">
+        <h5>Exams</h5>
+        <ul class="list-group" id="testList">
+                <!-- Test items will be dynamically added here -->
+            </ul>
+            
+            <!-- Show "Create Test" if no tests exist -->
+            <div id="noTestsMessage" class="text-center mt-3">
+            </div>
+    </div>
+
+    <!-- Right Side (Exam Options) -->
+    <div class="content">
+        <h4 id="examTitle">Select an Exam</h4>
+        <p id="examDuration" style="display: none;"><strong>Duration:</strong> <span id="durationValue"></span> minutes"></p>
+
+        <div id="examOptions" style="display: none;">
+            <div>   
+            <button class="btn btn-primary" onclick="showUpdateFormQuestions()">Update Questions</button>
+            <button class="btn btn-warning" onclick="showUpdateFormStudents()">Update Student List</button>
+           <!-- <button class="btn btn-info" onclick="updateTestTitle()">Update Test Title</button>
+            <button class="btn btn-secondary" onclick="updateTestDuration()">Update Test Duration</button> -->
+            <button class="btn btn-light text-danger border border-danger" onclick="deleteResponses()">Delete Responses</button>
+    </div>
+    <button class="btn btn-danger mt-5 px-4" onclick="deleteTest()">Delete Test</button>
+            <!-- Update Form (Hidden by Default) -->
+            <div id="updateSection" class="update-section">
+                <h5 id="updateSectionTitle"></h5>
+                <label class="form-label">Upload New File (Excel Format):</label>
+                <input type="file" class="form-control" id="updateFile" accept=".xlsx, .xls" required>
+                <a href="#" class="btn btn-link mt-2" id="sampleFileLink">Download Sample Excel</a>
+                <button class="btn btn-success mt-2" onclick="submitUpdate()">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js""></script>
+<script src="/js/manageTest.js"></script>
+<footer style="background: linear-gradient(180deg, rgb(240, 247, 255) 0%, rgb(255, 255, 255) 100%); color: #333; margin-top: 200px; padding: 4px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;margin-top:50px;padding-top:50px; padding: 0 20px;">
+        <p class="fcontent">© 2025 NUV Group, All rights reserved.</p>
+        <p class="fcontent" style="text-align: right;">Designed & Developed By Vaibhavi Patel</p>
+    </div>
+</footer>
+
+</body>
+</html>

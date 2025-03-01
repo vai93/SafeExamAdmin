@@ -149,7 +149,13 @@ module.exports = async (req, res) => {
             questionNumber++;
         }
         
-        
+        const { Octokit } = await import("@octokit/rest"); // Use dynamic import
+        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+        const owner = "vai93";
+        const repo = "SafeExam";
+        const filePath = `${testId}/index.html`;
+        const commitMessage = `Added test file for ${testId}`;
 
         const htmlContent = `
      <!DOCTYPE html>
@@ -216,7 +222,30 @@ module.exports = async (req, res) => {
 </body>
 </html>
     `;
-    
+     try {
+            let sha = null;
+            try {
+                const { data } = await octokit.rest.repos.getContent({ owner, repo, path: filePath });
+                sha = data.sha;
+            } catch (err) {
+                console.log("File does not exist, creating new one.");
+            }
+
+            await octokit.rest.repos.createOrUpdateFileContents({
+                owner,
+                repo,
+                path: filePath,
+                message: commitMessage,
+                content: Buffer.from(htmlContent).toString("base64"),
+                committer: { name: "Vaibhavi Patel", email: "vkpatel93@gmail.com" },
+                author: { name: "Vaibhavi Patel", email: "vkpatel93@gmail.com" },
+                sha: sha || undefined,
+            });
+
+            console.log(`Test HTML file uploaded to GitHub: ${filePath}`);
+        } catch (error) {
+            console.error("GitHub Upload Error:", error);
+        }
 
         return res.status(200).json({ message: "Test created successfully!", newStudents });
     } catch (error) {
@@ -224,5 +253,5 @@ module.exports = async (req, res) => {
         return res.status(500).json({ message: "Error processing test", error: error.message });
     }
 };
-
+module.exports = createTestHandler;
 

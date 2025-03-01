@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     noTestsMessage.style.display = "block";
     
     try {
-        const response = await fetch("http://localhost:3000/api/getTest", {
+        const response = await fetch("api/getTest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ adminEmail }),
@@ -82,7 +82,7 @@ function showUpdateFormStudents() {
 function deleteResponses() {
     testId=sessionStorage.getItem("testId");
     if (confirm("Are you sure you want to delete all responses? This action cannot be undone.")) {
-        fetch("http://localhost:3000/api/deleteResponses", {
+        fetch("api/deleteResponses", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ testId })
@@ -135,7 +135,7 @@ async function submitUpdate() {
         const base64Data = reader.result.split(",")[1];
 
         try {
-            const response = await fetch(`http://localhost:3000/api/update${updateType}`, {
+            const response = await fetch(`api/update${updateType}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ testId, fileData: base64Data })
@@ -191,7 +191,7 @@ function sendEmailsToStudents(students) {
 
 async function storeFailedEmail(student) {
     try {
-        const response = await fetch("http://localhost:3000/api/storeFailedEmail", {
+        const response = await fetch("api/storeFailedEmail", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -219,7 +219,7 @@ function updateTestTitle() {
     testId=sessionStorage.getItem("testId");
     const newTitle = prompt("Enter new test title:");
     if (newTitle) {
-        fetch("http://localhost:3000/api/updateTestTitle", {
+        fetch("api/updateTestTitle", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ testId, testTitle: newTitle })
@@ -234,7 +234,7 @@ function updateTestDuration() {
     testId=sessionStorage.getItem("testId");
     const newDuration = prompt("Enter new test duration (in minutes):");
     if (newDuration) {
-        fetch("http://localhost:3000/api/updateTestDuration", {
+        fetch("api/updateTestDuration", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ testId, testDuration: newDuration })

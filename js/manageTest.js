@@ -21,19 +21,19 @@ document.addEventListener("DOMContentLoaded", async function () {
             body: JSON.stringify({ adminEmail }),
         });
 
-        const data = await response.json();
+               const data = await response.json();
 
         if (response.ok) {
-            const tests = data.tests;
             testList.innerHTML = ""; // Clear previous content
-
-            if (tests.length > 0) {
+            if (data.tests.length > 0) {
                 noTestsMessage.style.display = "none";
-                tests.forEach((test) => {
+                data.tests.forEach((test) => {
                     const examItem = document.createElement("li");
                     examItem.classList.add("list-group-item", "exam-item");
                     examItem.textContent = `${test.docID} - ${test.testTitle}`;
-                    examItem.onclick = () => showExamOptions(test.docID, test.testTitle, test.testDuration);
+                    examItem.dataset.docid = test.docID;
+                    examItem.dataset.title = test.testTitle;
+                    examItem.dataset.duration = test.testDuration;
                     testList.appendChild(examItem);
                 });
             } else {
@@ -50,14 +50,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         noTestsMessage.innerHTML = "<p>Error loading tests.</p>";
     }
 });
-
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("exam-item")) {
+        showExamOptions(
+            event.target.dataset.docid,
+            event.target.dataset.title,
+            event.target.dataset.duration
+        );
+    }
+});
 function showExamOptions(testId, testTitle, duration) {
     sessionStorage.setItem("testId",testId);
-    document.getElementById("durationValue").innerHTML=duration;
+    document.getElementById("examOptions").style.display = "block";
+    document.getElementById("examDuration").innerHTML=`Duration: ${duration} minutes`;
     document.getElementById("examTitle").innerText = `${testId} - ${testTitle} `;
     document.getElementById("examDuration").innerText = `Duration: ${duration} mins`;
-    document.getElementById("examOptions").style.display = "block";
-    document.getElementById("examDuration").style.display = "block";
 }
 
 function showUpdateFormQuestions() {

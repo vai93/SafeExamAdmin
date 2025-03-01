@@ -1,9 +1,5 @@
 const { db } = require("../firebase-admin-setup");
-const { Octokit } = require("@octokit/rest");
-const octokit = new Octokit({ auth: "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" });
-
-const owner = "vai93"; 
-const repo = "SafeExam"; 
+require('dotenv').config();
 
 module.exports = async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,18 +27,20 @@ module.exports = async (req, res) => {
         await db.collection("TestDetails").doc(testId).delete();
 
         // 🔹 4. Delete GitHub Files (One by One)
+        const { Octokit } = await import("@octokit/rest"); // Use dynamic import
+         const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        const owner = "vai93";
+        const repo = "SafeExam";
+        const folderPath = `${testId}`; // No trailing slash
+        const commitMessage = `Added deleted file for ${testId}`;
         try {
-            const folderPath = `${testId}`; // No trailing slash
             console.log(`Checking GitHub folder: ${folderPath}`);
-
             const { data: files } = await octokit.rest.repos.getContent({ owner, repo, path: folderPath });
-
             if (!Array.isArray(files) || files.length === 0) {
                 console.log(`No files found in '${testId}', nothing to delete.`);
             } else {
                 for (const file of files) {
                     console.log(`Deleting: ${file.path}`);
-
                     await octokit.rest.repos.deleteFile({
                         owner,
                         repo,

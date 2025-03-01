@@ -67,6 +67,7 @@ function showExamOptions(testId, testTitle, duration) {
     document.getElementById("examDuration").innerText = `Duration: ${duration} mins`;
 }
 
+
 function showUpdateFormQuestions() {
     const updateSection = document.getElementById("updateSection");
     const updateSectionTitle = document.getElementById("updateSectionTitle");

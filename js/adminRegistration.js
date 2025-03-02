@@ -1,3 +1,6 @@
+document.addEventListener("DOMContentLoaded", function () {
+    emailjs.init("wk9qhm94B23_lBZWR");
+});
 document.getElementById("registerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     showLoader();
@@ -16,6 +19,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
         alert(result.message);
 
         if (response.ok) {
+            sendNotification(result.name,result.email);
             window.location.href = "\index.html";
         }
     } catch (error) {
@@ -26,7 +30,22 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
     }
 });
 
+function sendNotification(name,email){
+    const templateParams = {
+        to_email: "vaibhavik@nuv.ac.in",
+        subject: "New account created in safe exam portal",
+        rollnumber: name,
+        uniqueKey: email
+    };
 
+    emailjs.send("service_fiyiagk", "template_fdt3ewg", templateParams)
+        .then(response => {
+            console.log(`Email sent to vaibhavik@nuv.ac.in:`);
+        })
+        .catch(error => {
+            console.error(`Error sending email :`, error);
+        })
+}
 function createLoader() {
     if (!document.getElementById("loader")) {
         const loaderDiv = document.createElement("div");

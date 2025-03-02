@@ -287,7 +287,6 @@ function createLoader() {
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.8);
-            display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
@@ -316,9 +315,8 @@ function createLoader() {
         document.body.appendChild(loaderDiv);
     }
 }
-
+ createLoader();
 function showLoader() {
-    createLoader();
     document.getElementById("loader").style.display = "flex";
 }
 

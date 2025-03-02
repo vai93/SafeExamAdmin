@@ -176,7 +176,7 @@ module.exports = async (req, res) => {
         </div>
     </footer>
     
-     <script>sessionStorage.setItem("testId", ${testId});</script>
+     <script>sessionStorage.setItem("testId", "${testId}");</script>
 <script type="module"src="js/validation.js"></script>
 </body>
 </html>

@@ -4,11 +4,8 @@ let adminEmail = sessionStorage.getItem("adminEmail");
 if (!admin || !adminEmail) {
     window.location.href = "index.html";  // Redirect if not logged in
 }
-document.addEventListener("DOMContentLoaded", function () {
-    emailjs.init("wk9qhm94B23_lBZWR");
-});
-
 document.addEventListener("DOMContentLoaded", async function () {
+     emailjs.init("wk9qhm94B23_lBZWR");
     const testList = document.getElementById("testList");
     const noTestsMessage = document.getElementById("noTestsMessage");
     noTestsMessage.innerHTML = "<p>Loading tests...</p>";

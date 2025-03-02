@@ -135,7 +135,7 @@ function deleteTest() {
             hideLoader();
         });
     } 
-    }
+    
 
 
 async function submitUpdate() {

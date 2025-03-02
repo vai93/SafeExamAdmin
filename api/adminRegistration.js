@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
             name,
             email: nuvID,
             password: password,
-            emailVerified: false, // Store verification status
+            emailVerified: true, // Store verification status
         });
          // Send Verification Email to the New Admin
         //  await sendVerificationEmail(userRecord.email);
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
        
 
         
-        res.status(200).json({ message: "Registration successful! Please contact to the administrator for verification." });
+        res.status(200).json({ message: "Registration successful! Please contact to the administrator for verification." ,email:nuvID,name:name});
     } catch (error) {
         console.error("Error registering user:", error);
         res.status(500).json({ message: "Error registering user", error: error.message });

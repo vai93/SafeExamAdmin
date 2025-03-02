@@ -205,13 +205,13 @@ function sendEmailsToStudents(students) {
                 if (failedEmails.length > 0) {
                     alert(`Error: Emails were not sent to ${failedEmails.length} students. Please contact the admin.`);
                     
-                    try {
-                        for (const student of failedEmails) {
-                            await storeFailedEmail(student);
-                        }
-                    } catch (error) {
-                        console.error("Error storing failed emails:", error);
-                    }
+                    // try {
+                    //     for (const student of failedEmails) {
+                    //         await storeFailedEmail(student);
+                    //     }
+                    // } catch (error) {
+                    //     console.error("Error storing failed emails:", error);
+                    // }
                 }
             });
     });

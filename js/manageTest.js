@@ -256,7 +256,7 @@ function updateTestTitle() {
 
 function updateTestDuration() {
     showLoader();
-    testId=sessionStorage.getItem("testId");
+    const testId=sessionStorage.getItem("testId");
     const newDuration = prompt("Enter new test duration (in minutes):");
     if (newDuration) {
         fetch("api/updateTestDuration", {

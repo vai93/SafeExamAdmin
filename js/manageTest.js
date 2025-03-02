@@ -269,6 +269,7 @@ function updateTestDuration() {
         .catch(error => console.error("Error:", error))
         .finally(() => {
             hideLoader();
+             window.location.reload();
         });
     }
 }

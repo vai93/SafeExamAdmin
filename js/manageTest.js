@@ -114,7 +114,7 @@ function deleteTest() {
         return;
     }
 
-    fetch("http://localhost:3000/api/deleteTest", {
+    fetch("api/deleteTest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ testId })

@@ -143,7 +143,7 @@ function deleteTest() {
 
 async function submitUpdate() {
     showLoader();
-    testId=sessionStorage.getItem("testId");
+    const testId=sessionStorage.getItem("testId");
     const fileInput = document.getElementById("updateFile");
     const file = fileInput.files[0];
     const updateType = fileInput.getAttribute("data-update-type");

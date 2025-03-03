@@ -103,7 +103,7 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
                 await sendEmailsToStudents(result.newStudents);
             }
             alert("Test created successfully!");
-            document.getElementById("createTestForm").reset();
+            // document.getElementById("createTestForm").reset();
         } else {
             alert(result.message || "Error creating test.");
         }

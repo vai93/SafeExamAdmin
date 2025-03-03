@@ -5,7 +5,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
     event.preventDefault();
     showLoader();
     const name = document.getElementById("name").value.trim();
-    const nuvID = document.getElementById("nuvID").value.trim();
+   const nuvID = document.getElementById("nuvID").value.trim().toLowerCase();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
     try {

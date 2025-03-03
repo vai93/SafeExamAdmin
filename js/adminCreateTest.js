@@ -103,6 +103,7 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
                 await sendEmailsToStudents(result.newStudents);
             }
             alert("Test created successfully!");
+            window.location.reload();
             // document.getElementById("createTestForm").reset();
             
         } else {

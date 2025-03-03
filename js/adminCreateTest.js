@@ -104,6 +104,7 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
             }
             alert("Test created successfully!");
             // document.getElementById("createTestForm").reset();
+            
         } else {
             alert(result.message || "Error creating test.");
         }

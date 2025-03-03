@@ -97,11 +97,12 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
 
         const result = await response.json();
         if (response.ok) {
-            alert("Test created successfully!");
+            
             console.log(result.newStudents);
             if (result.newStudents.length > 0) {
-                sendEmailsToStudents(result.newStudents);
+                await sendEmailsToStudents(result.newStudents);
             }
+            alert("Test created successfully!");
             document.getElementById("createTestForm").reset();
         } else {
             alert(result.message || "Error creating test.");
@@ -120,7 +121,7 @@ function sendEmailsToStudents(students) {
 
     students.forEach(student => {
         const templateParams = {
-            to_email: student.email,
+            to_email: student.email1,
             subject: "Your Unique Key for the Exam",
             rollnumber: student.rollNumber,
             uniqueKey: student.uniqueKey

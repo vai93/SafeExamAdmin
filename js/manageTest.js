@@ -255,10 +255,10 @@ function updateTestTitle() {
 }
 
 function updateTestDuration() {
-    showLoader();
     const testId=sessionStorage.getItem("testId");
     const newDuration = prompt("Enter new test duration (in minutes):");
     if (newDuration) {
+        showLoader();
         fetch("api/updateTestDuration", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

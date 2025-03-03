@@ -121,7 +121,7 @@ function sendEmailsToStudents(students) {
 
     students.forEach(student => {
         const templateParams = {
-            to_email: student.email1,
+            to_email: student.email,
             subject: "Your Unique Key for the Exam",
             rollnumber: student.rollNumber,
             uniqueKey: student.uniqueKey

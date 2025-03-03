@@ -1,7 +1,7 @@
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     showLoader();    
-    const email = document.getElementById("email").value.trim(); // Trim email input
+    const email = document.getElementById("email").value.trim().toLowerCase(); // Trim email input
     const password = document.getElementById("password").value;
 
     if (!email || !password) {

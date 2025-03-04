@@ -19,7 +19,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
         alert(result.message);
 
         if (response.ok) {
-            sendNotification(result.name,result.email);
+            // sendNotification(result.name,result.email);
             window.location.href = "\index.html";
         }
     } catch (error) {

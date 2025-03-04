@@ -40,70 +40,49 @@ module.exports = async (req, res) => {
             password: password,
             emailVerified: true, // Store verification status
         });
-         // Send Verification Email to the New Admin
-        //  await sendVerificationEmail(userRecord.email);
+         const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "vkpatel93@gmail.com", // Gmail Account
+                pass: "waue kybv fjka qfzq", // App Password (must be valid)
+            },
+        });
 
-        // Notify the Super Admin about the new registration
-        // await notifySuperAdmin(name, nuvID);
+        // ✅ Email to Super Admin
+        const adminMailOptions = {
+            from: "vkpatel93@gmail.com",
+            to: "vaibhavik@nuv.ac.in",
+            subject: "New Admin Registration",
+            html: `<p>A new Super Admin account has been registered.</p>
+                   <p><strong>Name:</strong> ${name}</p>
+                   <p><strong>Email ID:</strong> ${nuvID}</p>
+                   <p>The admin needs to verify their email before activation.</p>`,
+        };
 
-       
+        // ✅ Email to New Admin (nuvID)
+        const userMailOptions = {
+            from: "vkpatel93@gmail.com",
+            to: nuvID, // New Admin Email
+            subject: "Account Successfully Created on Safe-Exam Portal",
+            html: `<p>Dear ${name},</p>
+                   <p>Your account has been successfully created on the Safe-Exam Portal.</p>
+                   <p>You can now create and manage your online tests.</p><br><br>
+                   <p>Best regards,<br>Vaibhavi</p>`,
+        };
 
-        
-        res.status(200).json({ message: "Registration successful!" ,email:nuvID,name:name});
+        // ✅ Send both emails
+        await transporter.sendMail(adminMailOptions);
+        console.log("✅ Super Admin notification sent.");
+
+        await transporter.sendMail(userMailOptions);
+        console.log("✅ New Admin confirmation email sent.");
+
+        res.status(200).json({ message: "Registration successful!", email: nuvID, name: name });
     } catch (error) {
-        console.error("Error registering user:", error);
+        console.error("🚨 Error sending email:", error);
+        if (error.response) {
+            console.error("📩 SMTP Response:", error.response);
+        }
         res.status(500).json({ message: "Error registering user", error: error.message });
     }
 };
-
-// Function to send email verification to the new admin
-async function sendVerificationEmail(email) {
-    const actionCodeSettings = {
-        url: `https://safe-exam-admin-nuv.vercel.app/verify-email?email=${encodeURIComponent(email)}`,
-        handleCodeInApp: true,
-    };
-
-    const link = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
-    console.log("Generated verification link:", link); 
-    // Send email using Nodemailer
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
-
-    const mailOptions = {
-        from: process.env.SMTP_USER,
-        to: email,
-        subject: "Verify Your Email - Super Admin",
-        html: `<p>Click the link below to verify your email:</p>
-               <p><a href="${link}">${link}</a></p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
-}
-
-// Function to notify the Super Admin about the new registration
-async function notifySuperAdmin(name, nuvID) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
-
-    const mailOptions = {
-        from: process.env.SMTP_USER,
-        to: "vkpatel93@gmail.com", // Super Admin's email
-        subject: "New Super Admin Registration",
-        html: `<p>A new Super Admin account has been registered.</p>
-               <p><strong>Name:</strong> ${name}</p>
-               <p><strong>Email ID:</strong> ${nuvID}</p>
-               <p>The admin needs to verify their email before activation.</p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
-}

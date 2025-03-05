@@ -46,7 +46,18 @@ module.exports = async (req, res) => {
             }
         
             await db.collection("TestDetails").doc(testId).update({ allowedStudents });
-        
+            if(newStudents){
+            const pendingEmailsCollection = db.collection("pendingEmails");
+            for (let student of newStudents) {
+                await pendingEmailsCollection.doc(student.email).set({
+                    name: student.name,
+                    rollNumber: student.rollNumber,
+                    email: student.email,
+                    uniqueKey: student.uniqueKey,
+                    createdAt: new Date(),
+                });
+            }
+        }
             return res.json({ message: "Student list updated successfully.",newStudents });
     } catch (error) {
         console.error("Error updating:", error);

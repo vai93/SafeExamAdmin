@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
                    <p>Best regards,<br>Vaibhavi</p>`,
         };
 
-        res.status(200).json({ message: "Registration request received." });
+        res.status(200).json({ message: "Registration successful!" });
 
 // Perform email sending in background (no need to await)
 transporter.sendMail(adminMailOptions).catch(console.error);

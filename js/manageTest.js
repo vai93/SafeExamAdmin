@@ -165,10 +165,10 @@ async function submitUpdate() {
             const result = await response.json();
             alert(result.message);
 
-            if (response.ok ){
+           if (response.ok ){
                 if(result.newStudents){
                     if(result.newStudents.length > 0) {
-                sendEmailsToStudents(result.newStudents);
+                        await notificationSuperAdmin();
             }}}
         } catch (error) {
             console.error("Error:", error);
@@ -179,61 +179,22 @@ async function submitUpdate() {
     };
 }
 
-function sendEmailsToStudents(students) {
-    let failedEmails = [];
+function notificationSuperAdmin(){
+    const templateParams = {
+        to_email: "vaibhavik@nuv.ac.in",
+        subject: "New students registered",
+        rollnumber: " ",
+        uniqueKey: " "
+    };
 
-    students.forEach(student => {
-        const templateParams = {
-            to_email: student.email,
-            subject: "Your Unique Key for the Exam",
-            rollnumber: student.rollNumber,
-            uniqueKey: student.uniqueKey
-        };
-
-        emailjs.send("service_fiyiagk", "template_fdt3ewg", templateParams)
-            .then(response => {
-                console.log(`Email sent to ${student.email}:`, response);
-            })
-            .catch(error => {
-                failedEmails.push(student);
-                console.error(`Error sending email to ${student.email}:`, error);
-            })
-            .finally(async () => {
-                if (failedEmails.length > 0) {
-                    alert(`Error: Emails were not sent to ${failedEmails.length} students. Please contact the admin.`);
-                    
-                    // try {
-                    //     for (const student of failedEmails) {
-                    //         await storeFailedEmail(student);
-                    //     }
-                    // } catch (error) {
-                    //     console.error("Error storing failed emails:", error);
-                    // }
-                }
-            });
-    });
-}
-
-async function storeFailedEmail(student) {
-    try {
-        const response = await fetch("api/storeFailedEmail", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: student.name,
-                email: student.email,
-                rollNumber: student.rollNumber,
-                uniqueKey: student.uniqueKey
-            })
+    emailjs.send("service_fiyiagk", "template_fdt3ewg", templateParams)
+        .then(response => {
+            console.log("Email sent successfully:", response);
+        })
+        .catch(error => {
+            console.error("Error sending email:", error);
         });
-
-        const data = await response.json();
-        console.log("Failed email stored:", data);
-    } catch (error) {
-        console.error("Error calling storeFailedEmail API:", error);
-    }
 }
-
 
 function updateTestTitle() {
     showLoader();

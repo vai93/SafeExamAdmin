@@ -35,33 +35,29 @@ module.exports = async (req, res) => {
             emailVerified: true,
         });
 
-        // ✅ Outlook SMTP Configuration
+        // ✅ Gmail SMTP Configuration
         const transporter = nodemailer.createTransport({
-            host: "smtp.office365.com", // Outlook SMTP Server
-            port: 587, // Secure port
-            secure: false, // TLS requires secure to be false
+            service: "gmail",
             auth: {
-                user: "nuv.cseexam@nuv.ac.in", // Outlook Organization Email
-                pass: "cseexam@123", // Your Email Password
-            },
-            tls: {
-                rejectUnauthorized: false, // To handle TLS-related issues
+                user: "vkpatel93@gmail.com", // Gmail Account
+                pass: "waue kybv fjka qfzq", // App Password (must be valid)
             },
         });
 
         // ✅ Email to Super Admin
         const adminMailOptions = {
-            from: "nuv.cseexam@nuv.ac.in",
+            from: "vkpatel93@gmail.com",
             to: "vaibhavik@nuv.ac.in",
             subject: "New Admin Registration",
-            html: `<p>A new Admin account has been registered.</p>
+            html: `<p>A new Super Admin account has been registered.</p>
                    <p><strong>Name:</strong> ${name}</p>
-                   <p><strong>Email ID:</strong> ${nuvID}</p>`,
+                   <p><strong>Email ID:</strong> ${nuvID}</p>
+                   <p>The admin needs to verify their email before activation.</p>`,
         };
 
         // ✅ Email to New Admin (nuvID)
         const userMailOptions = {
-            from: "nuv.cseexam@nuv.ac.in",
+            from: "vkpatel93@gmail.com",
             to: nuvID, // New Admin Email
             subject: "Account Successfully Created on Safe-Exam Portal",
             html: `<p>Dear ${name},</p>
@@ -70,11 +66,14 @@ module.exports = async (req, res) => {
                    <p>Best regards,<br>Vaibhavi</p>`,
         };
 
-        res.status(200).json({ message: "Registration successful!" });
+        // ✅ Send both emails
+        await transporter.sendMail(adminMailOptions);
+        console.log("✅ Super Admin notification sent.");
 
-// Perform email sending in background (no need to await)
-transporter.sendMail(adminMailOptions).catch(console.error);
-transporter.sendMail(userMailOptions).catch(console.error);
+        await transporter.sendMail(userMailOptions);
+        console.log("✅ New Admin confirmation email sent.");
+
+        res.status(200).json({ message: "Registration successful!", email: nuvID, name: name });
     } catch (error) {
         console.error("🚨 Error sending email:", error);
         if (error.response) {

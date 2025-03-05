@@ -70,11 +70,11 @@ module.exports = async (req, res) => {
                    <p>Best regards,<br>Vaibhavi</p>`,
         };
 
-        // ✅ Send both emails
-        await transporter.sendMail(adminMailOptions);
-        await transporter.sendMail(userMailOptions);
+        res.status(200).json({ message: "Registration request received." });
 
-        res.status(200).json({ message: "Registration successful!", email: nuvID, name: name });
+// Perform email sending in background (no need to await)
+transporter.sendMail(adminMailOptions).catch(console.error);
+transporter.sendMail(userMailOptions).catch(console.error);
     } catch (error) {
         console.error("🚨 Error sending email:", error);
         if (error.response) {

@@ -49,10 +49,9 @@ module.exports = async (req, res) => {
             from: "vkpatel93@gmail.com",
             to: "vaibhavik@nuv.ac.in",
             subject: "New Admin Registration",
-            html: `<p>A new Super Admin account has been registered.</p>
+            html: `<p>A new Admin account has been registered.</p>
                    <p><strong>Name:</strong> ${name}</p>
-                   <p><strong>Email ID:</strong> ${nuvID}</p>
-                   <p>The admin needs to verify their email before activation.</p>`,
+                   <p><strong>Email ID:</strong> ${nuvID}</p>`,
         };
 
         // ✅ Email to New Admin (nuvID)

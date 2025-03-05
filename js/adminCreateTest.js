@@ -115,11 +115,11 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
 });
 
 function notificationSuperAdmin(){
-    let adminEmail = sessionStorage.getItem("adminEmail");
+    let admin = sessionStorage.getItem("admin");
     const templateParams = {
         to_email: "vaibhavik@nuv.ac.in",
         subject: "New students registered",
-        admin:adminEmail
+        admin:admin
     };
 
     emailjs.send("service_fiyiagk", "template_dzd78vi", templateParams)

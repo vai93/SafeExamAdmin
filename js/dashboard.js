@@ -29,9 +29,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                 tests.forEach((test) => {
                     let listItem = document.createElement("li");
                     listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-
+                    const testURL = `https://safe-exam.vercel.app/${test.docID}`;
                     listItem.innerHTML = `
                         <span>${test.docID} - ${test.testTitle}</span>
+                        <a href="${testURL}" target="_blank" class="text-primary" style="text-decoration: none;">
+                        ${testURL}
+                        </a>
                         <span>
                             <button class="btn btn-sm ${test.isActive ? 'btn-danger' : 'btn-success'} toggle-btn" 
                                 data-id="${test.docID}" 

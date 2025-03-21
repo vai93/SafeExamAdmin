@@ -100,7 +100,13 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
              if (result.newStudents.length > 0) {
                 await notificationSuperAdmin();
             }
-            alert("Test created successfully!");
+            const message = `Test created successfully ✅ with the following URL:\n\n` +
+                `➡️ https://safe-exam.vercel.app/${testId}\n\n` +
+                `📝 You can test your exam using:\n` +
+                `- Roll Number: 1\n` +
+                `- Unique Key: 1\n\n` +
+                `📌 Note: You also need to start the exam from the dashboard.`;
+            alert(message); 
             window.location.reload();
         } else {
             alert(result.message || "Error creating test.");

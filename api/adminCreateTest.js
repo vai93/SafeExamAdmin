@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
             <form id="quizForm">
                 <div class="mb-3">
                     <label for="RollNumber" class="form-label">RollNumber</label>
-                    <input type="number" class="form-control" id="rollNumber" name="rollNumber"required>
+                    <input type="text" class="form-control" id="rollNumber" name="rollNumber"required>
                   </div>
                   <div class="mb-3">
                     <label for="uniqueKey" class="form-label">Unique Key</label>

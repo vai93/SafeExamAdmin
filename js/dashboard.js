@@ -139,7 +139,7 @@ async function downloadResponses(testId) {
                 Score: response.score || 0,
                 SubmittedAt: response.submittedAt ? new Date(response.submittedAt).toLocaleString() : "NA",
                 Violation: response.violation || "NA",
-                ipAddress: response.ip || "NA"
+                ipAddress: response.ip || "NA",
             };
 
             // Populate questions in sequence (Q1, Q2, ..., Qn)

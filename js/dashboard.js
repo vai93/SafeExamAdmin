@@ -32,9 +32,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const testURL = `https://safe-exam.vercel.app/${test.docID}`;
                     listItem.innerHTML = `
                         <span>${test.docID} - ${test.testTitle}</span>
-                        <a href="${testURL}" target="_blank" class="text-primary" style="text-decoration: none;">
-                        ${testURL}
-                        </a>
                         <span>
                             <button class="btn btn-sm ${test.isActive ? 'btn-danger' : 'btn-success'} toggle-btn" 
                                 data-id="${test.docID}" 

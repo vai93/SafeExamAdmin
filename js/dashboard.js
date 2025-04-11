@@ -51,56 +51,26 @@ document.addEventListener("DOMContentLoaded", async function () {
                     testList.appendChild(listItem);
                 });
 
-                  // document.querySelectorAll(".preview-btn").forEach((button) => {
-                //     button.addEventListener("click", function () {
-                //         const testId = this.getAttribute("data-id");
-                //         const testTitle = this.getAttribute("data-title") || "";
-                //         const testDuration = this.getAttribute("data-duration") || "";
-                //         const adminName = sessionStorage.getItem("admin") || "Admin";
-                
-                //         // Set cookie for validStudent
-                //         document.cookie = `validStudent=true; path=/; max-age=3600`;
-                
-                //         // Create hidden form
-                //         const form = document.createElement("form");
-                //         form.method = "POST";
-                //         form.action = `https://safe-exam.vercel.app/mcq.html`;
-                //         form.target = "_blank";
-                
-                //         const inputs = [
-                //             { name: "testId", value: testId },
-                //             { name: "rollNumber", value: "1" },
-                //             { name: "name", value: adminName },
-                //             { name: "testTitle", value: testTitle },
-                //             { name: "testDuration", value: testDuration },
-                //         ];
-                
-                //         inputs.forEach(input => {
-                //             const field = document.createElement("input");
-                //             field.type = "hidden";
-                //             field.name = input.name;
-                //             field.value = input.value;
-                //             form.appendChild(field);
-                //         });
-                
-                //         document.body.appendChild(form);
-                //         form.submit();
-                //         document.body.removeChild(form);
-                //     });
-                // });
+                 function encrypt(data) {
+                    return CryptoJS.AES.encrypt(data, "ghjfbdfjrcdjghrfjd").toString();
+                }
                 document.querySelectorAll(".preview-btn").forEach((button) => {
                     button.addEventListener("click", function () {
                         const testId = this.getAttribute("data-id");
-                        const testTitle = encodeURIComponent(this.getAttribute("data-title"));
-                        const testDuration = encodeURIComponent(this.getAttribute("data-duration"));
-                        const adminName = encodeURIComponent(sessionStorage.getItem("admin") || "Admin");
-                
-                        // Set cookie for student validation
-                        document.cookie = `validStudent=true; path=/; max-age=3600`;
+                        const testTitle = this.getAttribute("data-title");
+                        const testDuration = this.getAttribute("data-duration");
+                        const adminName = sessionStorage.getItem("admin") || "Admin";
+                        const encryptedParams = new URLSearchParams({
+                            a: encrypt("1"),  // r = rollNumber
+                            b: encrypt(adminName),              // n = name
+                            c: encrypt("true"),                 // v = validStudent
+                            d: encrypt(testId),
+                            e: encrypt(testTitle),
+                            f: encrypt(testDuration.toString())
+                        });
                 
                         // Construct URL with query parameters
-                        const url = `https://safe-exam.vercel.app/mcq.html?testId=${testId}&rollNumber=1&name=${adminName}&testTitle=${testTitle}&testDuration=${testDuration}`;
-                
+                        const url = `https://safe-exam.vercel.app/mcq.html?${encryptedParams.toString()}`;
                         // Open in new tab
                         window.open(url, "_blank");
                     });

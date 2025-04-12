@@ -147,6 +147,7 @@ async function submitUpdate() {
 
     if (!file) {
         alert("Please select a file to upload.");
+        hideLoader();
         return;
     }
 

@@ -13,71 +13,65 @@ module.exports = async (req, res) => {
     }
     if (req.method !== "POST") return res.status(405).json({ message: "Method Not Allowed" });
 
-    try {
-        const { testId, testTitle, testDuration, questionFileData, studentFileData,adminEmail } = req.body;
+   try {
+        const { testId, testTitle, testDuration, questionFileData, studentFileData, adminEmail } = req.body;
 
-        if (!questionFileData || !studentFileData) {
-            return res.status(400).json({ message: "Both question and student files are required" });
+        if (!questionFileData) {
+            return res.status(400).json({ message: "Question file is required" });
         }
 
-        // Convert Base64 back to Buffer
+        // Convert Base64 to Buffer
         const questionFileBuffer = Buffer.from(questionFileData, "base64");
-        const studentFileBuffer = Buffer.from(studentFileData, "base64");
-
-        // Process Excel files
         const questionWorkbook = XLSX.read(questionFileBuffer, { type: "buffer" });
-        const studentWorkbook = XLSX.read(studentFileBuffer, { type: "buffer" });
-
         const questionSheetName = questionWorkbook.SheetNames[0];
-        const studentSheetName = studentWorkbook.SheetNames[0];
-
         const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName]);
-        const studentData = XLSX.utils.sheet_to_json(studentWorkbook.Sheets[studentSheetName]);
 
-        if (questionData.length === 0 || studentData.length === 0) {
-            return res.status(400).json({ message: "Uploaded files are empty." });
+        if (questionData.length === 0) {
+            return res.status(400).json({ message: "Question file is empty." });
         }
 
-        // Extract student details (Roll Number, Name, Email)
+        // Initialize studentData as empty array
+        let studentData = [];
         const allowedStudents = [];
         const newStudents = [];
 
-        for (let row of studentData) {
-            const rollNumberKey = Object.keys(row)[0]; // First column (Roll Number)
-            const nameKey = Object.keys(row)[1]; // Second column (Name)
-            const emailKey = Object.keys(row)[2]; // Third column (Email)
+        if (studentFileData && studentFileData.trim() !== "") {
+            const studentFileBuffer = Buffer.from(studentFileData, "base64");
+            const studentWorkbook = XLSX.read(studentFileBuffer, { type: "buffer" });
+            const studentSheetName = studentWorkbook.SheetNames[0];
+            studentData = XLSX.utils.sheet_to_json(studentWorkbook.Sheets[studentSheetName]);
 
-            if (!row[rollNumberKey] || !row[nameKey] || !row[emailKey]) continue; // Skip incomplete rows
+            for (let row of studentData) {
+                const rollNumberKey = Object.keys(row)[0];
+                const nameKey = Object.keys(row)[1];
+                const emailKey = Object.keys(row)[2];
 
-            const rollNumber = String(row[rollNumberKey]).trim();
-            const name = String(row[nameKey]).trim();
-            const email = String(row[emailKey]).trim();
+                if (!row[rollNumberKey] || !row[nameKey] || !row[emailKey]) continue;
 
-            allowedStudents.push(rollNumber);
+                const rollNumber = String(row[rollNumberKey]).trim();
+                const name = String(row[nameKey]).trim();
+                const email = String(row[emailKey]).trim();
 
-            // Check if student already exists in StudentDetails
-            const studentRef = db.collection("studentDetails").doc(rollNumber);
-            const studentDoc = await studentRef.get();
+                allowedStudents.push(rollNumber);
 
-            if (!studentDoc.exists) {
-                const uniqueKey = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit key
-                
-                await studentRef.set({
-                    email,name,rollNumber, uniqueKey
-                });
+                const studentRef = db.collection("studentDetails").doc(rollNumber);
+                const studentDoc = await studentRef.get();
 
-                newStudents.push({ email,name,rollNumber, uniqueKey });
+                if (!studentDoc.exists) {
+                    const uniqueKey = Math.floor(1000 + Math.random() * 9000).toString();
+                    await studentRef.set({ email, name, rollNumber, uniqueKey });
+                    newStudents.push({ email, name, rollNumber, uniqueKey });
+                }
             }
         }
 
-        // Save test details including allowed students
         await db.collection("TestDetails").doc(testId).set({
             testTitle,
             testDuration,
-            allowedStudents, // Store allowed students array
+            allowedStudents,
             createdAt: new Date(),
             adminEmail,
-            isActive:false,
+            isActive: false,
         });
 
        // Save questions

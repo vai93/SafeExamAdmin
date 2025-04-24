@@ -80,10 +80,10 @@ module.exports = async (req, res) => {
             isActive:false,
         });
 
-        // Save questions
+       // Save questions
         const questionsCollection = db.collection(`${testId}Questions`);
         let questionNumber = 1;
-        
+
         for (let row of questionData) {
             const question = row.question ? String(row.question).trim() : null;
             const options = [
@@ -94,11 +94,18 @@ module.exports = async (req, res) => {
             ].filter(option => option !== null && option !== ""); // Remove empty options
 
             const answer = row.answer !== undefined ? String(row.answer).trim() : "NA";
-            
+
+            // Handle marks: use 1 if marks field is missing, empty, or not a valid number
+            let marks = 1;
+            if (row.hasOwnProperty('marks') && row.marks !== "" && !isNaN(row.marks)) {
+                marks = Number(row.marks);
+            }
+
             const questionData = {
                 question,
                 options,
-                answer
+                answer,
+                marks
             };
 
             // Handle image URL
@@ -109,6 +116,7 @@ module.exports = async (req, res) => {
             await questionsCollection.doc(`question${questionNumber}`).set(questionData);
             questionNumber++;
         }
+
         
   if(newStudents){
             const pendingEmailsCollection = db.collection("pendingEmails");

@@ -47,8 +47,8 @@ module.exports = async (req, res) => {
                     row.option3 ? String(row.option3).trim() : null,
                     row.option4 ? String(row.option4).trim() : null
                 ].filter(opt => opt !== null && opt !== ""),
-                answer: row.answer ? String(row.answer).trim() : "NA",
-                marks
+                answer: row.answer ? String(row.answer).trim() : "NA"
+                // marks
             };
 
             if (row.imageURL && String(row.imageURL).trim() !== "") {

@@ -50,19 +50,24 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
     const questionFile = document.getElementById("questionFile").files[0];
     const studentFile = document.getElementById("studentFile").files[0];
     const adminEmail=sessionStorage.getItem("adminEmail");
-    if (!questionFile || !studentFile) {
-        alert("Please upload both Question and Student files.");
+    if (!questionFile ) {
+        alert("Please upload Question file.");
         return;
     }
 
-    if (!questionFile.name.match(/\.(xlsx|xls)$/) || !studentFile.name.match(/\.(xlsx|xls)$/)) {
+    if (!questionFile.name.match(/\.(xlsx|xls)$/) ) {
         alert("Invalid file format. Only Excel files are allowed.");
         return;
     }
+    if (studentFile ) {
+    if (!studentFile.name.match(/\.(xlsx|xls)$/) ) {
+        alert("Invalid file format. Only Excel files are allowed.");
+        return;
+    }}
 
-    loader.style.display = "flex";
+     loader.style.display = "flex";
     spinner.style.display = "block";
-
+    
     // Read both files as Base64
     const readFileAsBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -75,7 +80,13 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
 
     try {
         const questionFileBase64 = await readFileAsBase64(questionFile);
-        const studentFileBase64 = await readFileAsBase64(studentFile);
+        let studentFileBase64 = "";
+        let studentFileName = "";
+
+    if (studentFile && studentFile instanceof Blob) {
+        studentFileBase64 = await readFileAsBase64(studentFile);
+        studentFileName = studentFile.name;
+    }
 
         const payload = {
             testId: testId,
@@ -84,7 +95,7 @@ document.getElementById("createTestForm").addEventListener("submit", async funct
             questionFileData: questionFileBase64,
             questionFileName: questionFile.name,
             studentFileData: studentFileBase64,
-            studentFileName: studentFile.name,
+            studentFileName: studentFileName,
             adminEmail:adminEmail
         };
 

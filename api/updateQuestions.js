@@ -33,6 +33,12 @@ module.exports = async (req, res) => {
         }
         let questionNumber = 1;
         for (let row of data) {
+            // Safely handle marks
+            let marks = 1;
+            if (row.hasOwnProperty('marks') && row.marks !== "" && !isNaN(row.marks)) {
+                marks = Number(row.marks);
+            }
+
             const questionData = {
                 question: row.question ? String(row.question).trim() : null,
                 options: [
@@ -41,13 +47,14 @@ module.exports = async (req, res) => {
                     row.option3 ? String(row.option3).trim() : null,
                     row.option4 ? String(row.option4).trim() : null
                 ].filter(opt => opt !== null && opt !== ""),
-                answer: row.answer ? String(row.answer).trim() : "NA"
+                answer: row.answer ? String(row.answer).trim() : "NA",
+                marks
             };
-    
+
             if (row.imageURL && String(row.imageURL).trim() !== "") {
                 questionData.imageURL = row.imageURL;
             }
-    
+
             await questionsCollection.doc(`question${questionNumber}`).set(questionData);
             questionNumber++;
         }

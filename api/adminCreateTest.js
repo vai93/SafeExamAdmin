@@ -104,8 +104,8 @@ module.exports = async (req, res) => {
             const questionData = {
                 question,
                 options,
-                answer
-                // marks
+                answer,
+                marks
             };
 
             // Handle image URL

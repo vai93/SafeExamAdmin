@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
             }
 
             const questionData = {
-                question: row.question ? String(row.question).trim() : null,
+                question : row.question? String(row.question).replace(/<br\s*\/?>/gi, '\n').trim(): null,
                 options: [
                     row.option1 ? String(row.option1).trim() : null,
                     row.option2 ? String(row.option2).trim() : null,

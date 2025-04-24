@@ -85,7 +85,9 @@ module.exports = async (req, res) => {
         let questionNumber = 1;
 
         for (let row of questionData) {
-            const question = row.question ? String(row.question).trim() : null;
+            const question = row.question
+  ? String(row.question).replace(/<br\s*\/?>/gi, '\n').trim()
+  : null;
             const options = [
                 row.option1 !== undefined ? String(row.option1).trim() : null,
                 row.option2 !== undefined ? String(row.option2).trim() : null,

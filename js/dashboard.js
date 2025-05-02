@@ -71,8 +71,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 
                         // Construct URL with query parameters
                         const url = `https://safe-exam.vercel.app/mcq.html?${encryptedParams.toString()}`;
-                        // Open in new tab
-                        window.open(url, "_blank");
+                        const relatedToggleBtn = document.querySelector(`.toggle-btn[data-id='${this.getAttribute("data-id")}']`);
+                        const isActive = relatedToggleBtn?.getAttribute("data-active") === "true";
+
+                        if (isActive) {
+                            window.open(url, "_blank");
+                        } else {
+                            alert("You need to start the test first to preview.");
+                        }
                     });
                 });
 

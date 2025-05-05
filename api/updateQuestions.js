@@ -18,7 +18,9 @@ module.exports = async (req, res) => {
         const fileBuffer = Buffer.from(fileData, "base64");
         const workbook = XLSX.read(fileBuffer, { type: "buffer" });
         const sheetName = workbook.SheetNames[0];
-        const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+         const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+            defval: null  // or defval: "" if you prefer
+          });
 
         if (data.length === 0) {
             return res.status(400).json({ message: "Uploaded file is empty." });
@@ -40,16 +42,20 @@ module.exports = async (req, res) => {
             }
 
             const questionData = {
-                question : row.question? String(row.question).replace(/<br\s*\/?>/gi, '\n').trim(): null,
-                options: [
-                    row.option1 ? String(row.option1).trim() : null,
-                    row.option2 ? String(row.option2).trim() : null,
-                    row.option3 ? String(row.option3).trim() : null,
-                    row.option4 ? String(row.option4).trim() : null
-                ].filter(opt => opt !== null && opt !== ""),
-                answer: row.answer ? String(row.answer).trim() : "NA",
-                 marks
-            };
+                question:
+                  row.question !== undefined
+                    ? String(row.question).replace(/<br\s*\/?>/gi, "\n").trim()
+                    : null,
+              
+                options: [row.option1, row.option2, row.option3, row.option4]
+                  .filter(opt => opt !== undefined && opt !== null && String(opt).trim() !== "")
+                  .map(opt => String(opt).trim()),
+              
+                answer:
+                  row.answer !== undefined ? String(row.answer).trim() : "NA",
+              
+                marks
+              };
 
             if (row.imageURL && String(row.imageURL).trim() !== "") {
                 questionData.imageURL = row.imageURL;

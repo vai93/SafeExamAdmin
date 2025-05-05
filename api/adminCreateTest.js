@@ -24,11 +24,11 @@ module.exports = async (req, res) => {
         const questionFileBuffer = Buffer.from(questionFileData, "base64");
         const questionWorkbook = XLSX.read(questionFileBuffer, { type: "buffer" });
         const questionSheetName = questionWorkbook.SheetNames[0];
-        // const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName]);
-        const questionData = XLSX.utils.sheet_to_json(
-  questionWorkbook.Sheets[questionSheetName],
-  { defval: null } 
-);
+        const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName]);
+//         const questionData = XLSX.utils.sheet_to_json(
+//   questionWorkbook.Sheets[questionSheetName],
+//   { defval: null } 
+// );
         if (questionData.length === 0) {
             return res.status(400).json({ message: "Question file is empty." });
         }

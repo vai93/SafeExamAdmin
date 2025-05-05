@@ -24,11 +24,9 @@ module.exports = async (req, res) => {
         const questionFileBuffer = Buffer.from(questionFileData, "base64");
         const questionWorkbook = XLSX.read(questionFileBuffer, { type: "buffer" });
         const questionSheetName = questionWorkbook.SheetNames[0];
-        const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName]);
-//         const questionData = XLSX.utils.sheet_to_json(
-//   questionWorkbook.Sheets[questionSheetName],
-//   { defval: null } 
-// );
+        const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName], {
+            defval: null
+          });
         if (questionData.length === 0) {
             return res.status(400).json({ message: "Question file is empty." });
         }
@@ -82,41 +80,37 @@ module.exports = async (req, res) => {
         let questionNumber = 1;
 
         for (let row of questionData) {
-            const question = row.question
-  ? String(row.question).replace(/<br\s*\/?>/gi, '\n').trim()
-  : null;
-            const options = [
-                row.option1 !== undefined ? String(row.option1).trim() : null,
-                row.option2 !== undefined ? String(row.option2).trim() : null,
-                row.option3 !== undefined ? String(row.option3).trim() : null,
-                row.option4 !== undefined ? String(row.option4).trim() : null
-            ].filter(option => option !== null && option !== ""); // Remove empty options
-
+            const question = row.question !== undefined
+                ? String(row.question).replace(/<br\s*\/?>/gi, '\n').trim()
+                : null;
+        
+            const rawOptions = [row.option1, row.option2, row.option3, row.option4];
+        
+            const options = rawOptions
+                .filter(opt => opt !== undefined && opt !== null && String(opt).trim() !== "")
+                .map(opt => String(opt).trim());
+        
             const answer = row.answer !== undefined ? String(row.answer).trim() : "NA";
-
-            // Handle marks: use 1 if marks field is missing, empty, or not a valid number
+        
             let marks = 1;
             if (row.hasOwnProperty('marks') && row.marks !== "" && !isNaN(row.marks)) {
                 marks = Number(row.marks);
             }
-
+        
             const questionData = {
                 question,
                 options,
                 answer,
                 marks
             };
-
-            // Handle image URL
+        
             if (row.imageURL && String(row.imageURL).trim() !== "") {
                 questionData.imageURL = row.imageURL;
             }
-
+        
             await questionsCollection.doc(`question${questionNumber}`).set(questionData);
             questionNumber++;
         }
-
-        
   if(newStudents){
             const pendingEmailsCollection = db.collection("pendingEmails");
             for (let student of newStudents) {

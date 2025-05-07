@@ -24,9 +24,20 @@ module.exports = async (req, res) => {
         const questionFileBuffer = Buffer.from(questionFileData, "base64");
         const questionWorkbook = XLSX.read(questionFileBuffer, { type: "buffer" });
         const questionSheetName = questionWorkbook.SheetNames[0];
-        const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName], {
-            defval: null
+        // const questionData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName], {
+        //     defval: null
+        //   });
+        const rawData = XLSX.utils.sheet_to_json(questionWorkbook.Sheets[questionSheetName], {
+            defval: null, // keep empty cells as null
+            raw: false     // force conversion to formatted strings
           });
+          
+          // Optional: map all values to string
+          const questionData = rawData.map(row =>
+            Object.fromEntries(
+              Object.entries(row).map(([key, val]) => [key, val != null ? String(val) : null])
+            )
+          );
         if (questionData.length === 0) {
             return res.status(400).json({ message: "Question file is empty." });
         }
